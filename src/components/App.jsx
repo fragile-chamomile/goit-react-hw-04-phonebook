@@ -1,90 +1,71 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
+import { useState } from 'react';
+import { Container, HeroTitle } from './App.styled';
 import { nanoid } from 'nanoid';
+import { RiContactsBookLine } from 'react-icons/ri';
 
 import ContactForm from './ContactForm/ContactForm';
 import Filter from './Filter/Filter';
 import ContactList from './ContactList/ContactList';
+import useLocalStorage from './hooks/useLocalStorage';
 
-class App extends Component {
-  state = {
-    contacts: [
-      { id: 'id-1', name: 'Rosie Simpson', number: '459-12-56' },
-      { id: 'id-2', name: 'Hermione Kline', number: '443-89-12' },
-      { id: 'id-3', name: 'Eden Clements', number: '645-17-79' },
-      { id: 'id-4', name: 'Annie Copeland', number: '227-91-26' },
-    ],
-    filter: '',
-  };
+function App() {
+  const [contacts, setContacts] = useLocalStorage('contacts', [
+    { id: 'id-1', name: 'Rosie Simpson', number: '459-12-56' },
+    { id: 'id-2', name: 'Hermione Kline', number: '443-89-12' },
+    { id: 'id-3', name: 'Eden Clements', number: '645-17-79' },
+    { id: 'id-4', name: 'Annie Copeland', number: '227-91-26' },
+  ]);
+  const [filter, setFilter] = useState('');
 
-  addContactItem = (name, number) => {
+  // Добавление контакта, проверка на повторение имени
+  const addContactItem = (name, number) => {
     const contact = {
-      id: (this.contactId = nanoid()),
+      id: nanoid(),
       name,
       number,
     };
 
-    const dublicateName = this.state.contacts.find(contact => {
+    const dublicateName = contacts.find(contact => {
       return contact.name.toLowerCase() === name.toLowerCase();
     });
 
     if (dublicateName) {
-      alert(`${name} is already in contacts.`);
-      return;
+      return alert(`${name} is already in contacts.`);
     }
 
-    this.setState(({ contacts }) => ({
-      contacts: [...contacts, contact],
-    }));
+    setContacts(contacts => [...contacts, contact]);
   };
 
-  deleteContactItem = ContactItemId => {
-    this.setState(prevState => ({
-      contacts: prevState.contacts.filter(
-        contact => contact.id !== ContactItemId
-      ),
-    }));
+  // Удаление контакта
+  const deleteContactItem = ContactItemId => {
+    setContacts(contacts.filter(contact => contact.id !== ContactItemId));
   };
 
-  changeFilter = e => {
-    this.setState({ filter: e.currentTarget.value });
-  };
+  const changeFilter = e => setFilter(e.currentTarget.value);
 
-  getContactItem = () => {
-    const { filter, contacts } = this.state;
+  // Фильтрация списка контактов
+  const getContactItem = () => {
     const normalizedFilter = filter.toLowerCase();
     return contacts.filter(contact =>
       contact.name.toLowerCase().includes(normalizedFilter)
     );
   };
 
-  render() {
-    const { filter } = this.state;
-    const contactFilter = this.getContactItem();
+  return (
+    <Container>
+      <HeroTitle>
+        Phonebook <RiContactsBookLine />
+      </HeroTitle>
+      <ContactForm onSubmit={addContactItem} />
 
-    return (
-      <div style={{ margin: '50px auto 0', textAlign: 'center' }}>
-        <h1>Phonebook</h1>
-        <ContactForm onSubmit={this.addContactItem} />
-
-        <h2>Contacts</h2>
-        <Filter value={filter} onChange={this.changeFilter} />
-        <ContactList
-          contacts={contactFilter}
-          onDeleteContactlist={this.deleteContactItem}
-        />
-      </div>
-    );
-  }
+      <h2>Contacts</h2>
+      <Filter value={filter} onChange={changeFilter} />
+      <ContactList
+        contacts={getContactItem()}
+        onDeleteContactlist={deleteContactItem}
+      />
+    </Container>
+  );
 }
-
-App.propTypes = {
-  state: PropTypes.arrayOf(
-    PropTypes.shape({
-      contacts: PropTypes.func.isRequired,
-      filter: PropTypes.string.isRequired,
-    })
-  ),
-};
 
 export default App;

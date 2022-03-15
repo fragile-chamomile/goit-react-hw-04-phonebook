@@ -1,6 +1,11 @@
 import styled from '@emotion/styled';
 
-export const Form = styled.form``;
+export const Form = styled.form`
+  width: 420px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+`;
 
 export const Label = styled.label`
   display: block;
@@ -10,31 +15,37 @@ export const Label = styled.label`
 `;
 
 export const Input = styled.input`
-  margin-left: 10px;
+  width: 81%;
+  margin-left: 20px;
+  padding: 4px 0;
 
   border: none;
-  border-radius: 10px;
+  border-radius: 4px;
   box-shadow: 0px 5px 10px 2px rgba(34, 60, 80, 0.2);
 
   &:hover,
   &:focus,
   &:active {
-    outline-color: green;
-    box-shadow: 0px 5px 10px 2px rgba(0, 200, 0, 0.4);
+    outline-color: #007bff;
+    box-shadow: 0px 5px 10px 2px rgba(0, 123, 255, 0.4);
   }
 `;
 
 export const Button = styled.button`
-  width: 120px;
+  width: 100%;
   margin-bottom: 50px;
+  padding: 4px 0;
 
   border: none;
-  border-radius: 10px;
+  border-radius: 4px;
+
+  color: aliceblue;
+  background-color: #17a2b8;
   box-shadow: 0px 5px 10px 2px rgba(34, 60, 80, 0.2);
+  cursor: pointer;
 
   &:hover,
   &:focus {
-    color: green;
-    box-shadow: 0px 5px 10px 2px rgba(0, 200, 0, 0.4);
+    box-shadow: 0px 5px 10px 2px rgba(0, 123, 255, 0.4);
   }
 `;
